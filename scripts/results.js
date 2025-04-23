@@ -1,116 +1,45 @@
-// URL вашего GitHub repository и файла с результатами
-const GITHUB_API_URL = "https://nomixxx.github.io/DariaK/results.html";
-const GITHUB_TOKEN = "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"; // Замените на ваш токен
+// Получаем результаты из localStorage или создаем пустой объект
+let results = JSON.parse(localStorage.getItem('results')) || {};
 
-
-// Функция для получения результатов из GitHub
-async function fetchResultsFromGitHub() {
-    try {
-        const response = await fetch(GITHUB_API_URL, {
-            headers: {
-                Authorization: `token ${GITHUB_TOKEN}`,
-                Accept: "application/vnd.github.v3+json"
-            }
-        });
-
-        if (!response.ok) {
-            console.error("Не удалось загрузить результаты с GitHub.");
-            return {};
-        }
-
-        const data = await response.json();
-        const resultsContent = atob(data.content); // Расшифровываем Base64
-        return JSON.parse(resultsContent);
-    } catch (error) {
-        console.error("Ошибка при получении результатов:", error);
-        return {};
-    }
-}
-
-// Функция для сохранения результатов на GitHub
-async function saveResultsToGitHub(newResults) {
-    try {
-        const currentResults = await fetchResultsFromGitHub();
-
-        // Объединяем текущие результаты с новыми
-        for (const faculty in newResults) {
-            if (!currentResults[faculty]) {
-                currentResults[faculty] = [];
-            }
-            currentResults[faculty].push(...newResults[faculty]);
-        }
-
-        // Подготавливаем данные для отправки
-        const content = btoa(JSON.stringify(currentResults)); // Кодируем в Base64
-        const shaResponse = await fetch(GITHUB_API_URL, {
-            headers: {
-                Authorization: `token ${GITHUB_TOKEN}`,
-                Accept: "application/vnd.github.v3+json"
-            }
-        });
-        const shaData = await shaResponse.json();
-
-        // Отправляем обновленные результаты
-        const updateResponse = await fetch(GITHUB_API_URL, {
-            method: "PUT",
-            headers: {
-                Authorization: `token ${GITHUB_TOKEN}`,
-                Accept: "application/vnd.github.v3+json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: "Обновление результатов опроса",
-                content,
-                sha: shaData.sha
-            })
-        });
-
-        if (!updateResponse.ok) {
-            console.error("Не удалось сохранить результаты на GitHub.");
-        } else {
-            console.log("Результаты успешно сохранены!");
-        }
-    } catch (error) {
-        console.error("Ошибка при сохранении результатов:", error);
-    }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    displayResults(); // Отображаем результаты при загрузке страницы
+});
 
 // Функция для отображения результатов
-async function displayResults() {
+function displayResults() {
     const resultsTableBody = document.querySelector('#resultsTable tbody');
     resultsTableBody.innerHTML = ''; // Очищаем таблицу
-
-    const results = await fetchResultsFromGitHub();
 
     // Преобразуем результаты в массив объектов для сортировки
     const sortedResults = Object.keys(results)
         .map(facultyKey => {
-            const decodedFaculty = decodeURIComponent(facultyKey);
-            const facultyResults = results[facultyKey];
+            const decodedFaculty = decodeURIComponent(facultyKey); // Декодируем название факультета
+            const facultyResults = results[facultyKey]; // Получаем результаты для факультета
 
-            if (!facultyResults || facultyResults.length === 0) return null;
+            if (!facultyResults || facultyResults.length === 0) return null; // Пропускаем факультеты без результатов
 
+            // Считаем общую сумму баллов и количество отзывов
             const totalScores = facultyResults.reduce((sum, result) => sum + result.totalScore, 0);
             const reviewCount = facultyResults.length;
 
             return {
                 faculty: decodedFaculty,
-                totalScore: totalScores,
-                reviewCount: reviewCount
+                totalScore: totalScores, // Общая сумма баллов
+                reviewCount: reviewCount // Количество отзывов
             };
         })
-        .filter(Boolean)
-        .sort((a, b) => b.totalScore - a.totalScore);
+        .filter(Boolean) // Убираем null значения
+        .sort((a, b) => b.totalScore - a.totalScore); // Сортируем по убыванию общей суммы баллов
 
     // Отображаем отсортированные результаты в таблице
     sortedResults.forEach(result => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${result.faculty}</td>
-            <td>${result.totalScore}</td>
-            <td>${result.reviewCount}</td>
+            <td>${result.faculty}</td> <!-- Название факультета -->
+            <td>${result.totalScore}</td> <!-- Общая сумма баллов -->
+            <td>${result.reviewCount}</td> <!-- Количество отзывов -->
         `;
-        resultsTableBody.appendChild(row);
+        resultsTableBody.appendChild(row); // Добавляем строку в таблицу
     });
 
     if (sortedResults.length === 0) {
@@ -118,60 +47,15 @@ async function displayResults() {
     }
 }
 
-
-// Функция для отправки результатов
-async function submitQuiz() {
-    const facultySelect = document.getElementById('facultySelect');
-    const selectedFacultyEncoded = facultySelect.value;
-    if (!selectedFacultyEncoded) {
-        alert("Выберите факультет перед отправкой ответов."); // Проверка выбора факультета
-        return;
-    }
-
-    const quizForm = document.getElementById('quizForm');
-    const totalScore = Array.from(quizForm.querySelectorAll('input[type="radio"]:checked'))
-        .reduce((sum, input) => sum + parseInt(input.value), 0); // Считаем сумму баллов
-
-    // Проверяем, ответили ли на все вопросы
-    const unansweredQuestions = Array.from(quizForm.querySelectorAll('.question-block')).filter(block => {
-        const radioButtons = block.querySelectorAll('input[type="radio"]');
-        return !Array.from(radioButtons).some(button => button.checked); // Проверяем, есть ли непройденные вопросы
-    });
-
-    if (unansweredQuestions.length > 0) {
-        alert(`Вы не ответили на ${unansweredQuestions.length} вопрос${unansweredQuestions.length === 1 ? '' : unansweredQuestions.length > 4 ? 'ов' : 'а'}.`);
-        return;
-    }
-
-    if (totalScore === 0) {
-        alert("Произошла ошибка при подсчете баллов."); // Защита от ошибок
-        return;
-    }
-
-    const date = new Date().toLocaleString(); // Текущая дата и время
-    const decodedFaculty = decodeURIComponent(selectedFacultyEncoded);
-
-    // Создаем новые результаты для сохранения
-    const newResult = { totalScore, date };
-    const updatedResults = { [decodedFaculty]: [newResult] };
-
-    // Сохраняем результаты на GitHub
-    await saveResultsToGitHub(updatedResults);
-
-    alert("Спасибо за ваши ответы!"); // Сообщение после отправки
-    window.location.href = "index.html"; // Возвращаемся на главную страницу
-}
-
 // Функция для редактирования общей суммы баллов через код
-async function editFinalScores() {
-    const results = await fetchResultsFromGitHub();
-    const updatedResults = {};
+function editFinalScores() {
+    const updatedResults = {}; // Создаем новый объект для результатов
 
     // Проходим по всем факультетам в results
     Object.keys(results).forEach(facultyKey => {
-        const decodedFaculty = decodeURIComponent(facultyKey);
-        const currentTotalScore = calculateTotalScore(results[facultyKey]);
-        const currentReviewCount = results[facultyKey].length;
+        const decodedFaculty = decodeURIComponent(facultyKey); // Декодируем название факультета
+        const currentTotalScore = calculateTotalScore(results[facultyKey]); // Текущая общая сумма баллов
+        const currentReviewCount = results[facultyKey].length; // Количество отзывов
 
         // Запрашиваем новое значение общей суммы баллов
         const newTotalScore = parseFloat(
@@ -189,8 +73,9 @@ async function editFinalScores() {
         }
     });
 
-    // Сохраняем обновленные результаты на GitHub
-    await saveResultsToGitHub(updatedResults);
+    // Сохраняем обновленные результаты в localStorage
+    localStorage.setItem('results', JSON.stringify(updatedResults));
+    results = updatedResults; // Обновляем глобальную переменную results
     displayResults(); // Перерисовываем таблицу
 }
 
@@ -207,15 +92,45 @@ function generateMockResults(facultyName, targetTotalScore, reviewCount) {
 
     // Генерируем фиктивные результаты так, чтобы их общая сумма равнялась targetTotalScore
     for (let i = 0; i < reviewCount; i++) {
-        const scorePerReview = Math.round(targetTotalScore / reviewCount);
-        const date = new Date().toLocaleString();
+        const scorePerReview = Math.round(targetTotalScore / reviewCount); // Распределяем баллы между отзывами
+        const date = new Date().toLocaleString(); // Текущая дата
         mockResults.push({ totalScore: scorePerReview, date });
     }
 
     return mockResults;
 }
+// Исходный код консоли
+const originalConsoleLog = console.log;
+const originalConsoleWarn = console.warn;
+const originalConsoleError = console.error;
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', async () => {
-    await displayResults(); // Отображаем результаты при загрузке страницы
-});
+// Переопределение методов консоли
+console.log = function (...args) {
+    if (!checkConsolePassword()) {
+        alert("Доступ к консоли заблокирован!");
+        return;
+    }
+    originalConsoleLog.apply(console, args);
+};
+
+console.warn = function (...args) {
+    if (!checkConsolePassword()) {
+        alert("Доступ к консоли заблокирован!");
+        return;
+    }
+    originalConsoleWarn.apply(console, args);
+};
+
+
+// Функция для проверки пароля
+function checkConsolePassword() {
+    const password = prompt("Введите пароль для доступа к консоли:", "");
+    if (password !== "Admin159951") { // Замените "your_password_here" на ваш пароль
+        alert("Неверный пароль!");
+        return false;
+    }
+    
+    return true;
+}
+
+// editFinalScores(); - ввести в консоли и указать нужное кол-во баллов
