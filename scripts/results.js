@@ -1,5 +1,5 @@
 // URL вашего GitHub repository и файла с результатами
-const GITHUB_API_URL = "https://github.com/NomixXx/DariaK/edit/main/scripts/results.js";
+const GITHUB_API_URL = "https://github.com/NomixXx/DariaK/blob/main/results.html";
 const GITHUB_TOKEN = "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"; // Замените на ваш токен
 
 // Получаем результаты из GitHub или создаем пустой объект
