@@ -1,0 +1,220 @@
+/* Базовые настройки */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #284d51, #3e6b71);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background 0.5s ease;
+}
+
+.container {
+    max-width: 600px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 1s ease-in-out;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: slideIn 1s ease-in-out;
+}
+
+p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+/* Форма выбора факультета */
+#facultySelector {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#facultySelector label {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+#facultySelector select {
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    background: #3e6b71;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#facultySelector select:focus {
+    background: #284d51;
+}
+
+/* Таблица результатов */
+#resultsTable {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#resultsTable th,
+#resultsTable td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #4f7c82;
+    transition: background-color 0.1s ease;
+}
+
+#resultsTable tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+/* Фоновое изображение ..............................................................................................................*/
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('images/logo.png') no-repeat center center/cover; /* Путь к изображению */
+    background: linear-gradient(135deg, #284d51, #3e6b71);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Логотип universities */
+.site-header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.site-logo {
+    max-width: 601px; /* Размер изображения */
+    height: auto;
+    border-radius: 10px; /* Сlightly rounded corners */
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.3); /* Тень для изображения */
+    animation: fadeIn 1s ease-in-out; /* Анимация появления */
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Стиль для контейнера вариантов ответов */
+.options-container {
+    display: flex;
+    flex-direction: column; /* Размещаем ответы вертикально */
+    gap: 10px; /* Добавляем равномерное расстояние между ответами */
+}
+
+/* Стиль для каждого варианта ответа */
+.options-container label {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px; /* Пространство внутри ответа */
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1); /* Легкий фон для каждого ответа */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* Внутренняя тень для красоты */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Плавная анимация при наведении */
+}
+
+/* Активация выбранного ответа */
+.options-container input[type="radio"] {
+    appearance: none; /* Убираем стандартный вид радиокнопок */
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-right: 8px;
+    position: relative;
+    top: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.options-container input[type="radio"]:checked {
+    background: #34a0a4; /* Цвет фона для выбранной радиокнопки */
+}
+
+.options-container input[type="radio"]:hover {
+    background: rgba(0, 225, 255, 0.192); /* Изменение цвета при наведении */
+}
+
+/* Стиль для текста ответа */
+.options-container span {
+    color: #fff;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+/* Активация выбранного ответа (текст) */
+.options-container input[type="radio"]:checked + span {
+    color: #fff; /* Цвет текста для выбранного ответа */
+    font-weight: bold; /* Жирный шрифт для выбранного ответа */
+}
+
+.options-container {
+    gap: 1px; /* Можно увеличить/уменьшить расстояние */
+}
+
+.options-container input[type="radio"] {
+    width: 20px; /* Размер кнопки */
+    height: 20px;
+    border: 2px solid #ffffff;
+}

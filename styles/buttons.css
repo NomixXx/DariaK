@@ -1,0 +1,56 @@
+/* Кнопки */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 30px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Кнопка "Главная" */
+.btn-secondary {
+    background: #4f7c82;
+}
+
+.btn-secondary:hover {
+    background: #3f6267;
+    transform: scale(1.05);
+}
+
+/* Кнопка "Отправить" */
+.btn-success {
+    background: #34a0a4;
+}
+
+.btn-success:hover {
+    background: #208c90;
+    transform: scale(1.05);
+}
+
+/* Кнопка "Начать опрос" */
+.btn-primary {
+    background: #284d51;
+    
+}
+
+.btn-primary:hover {
+    background: #1e3a40;
+    transform: scale(1.05);
+    
+}
+
+/* Кнопка "Результаты" */
+.btn-info {
+    background: #e76f51;
+    color: #284d51;
+}
+
+.btn-info:hover {
+    background: #d05a41;
+    transform: scale(1.05);
+}
