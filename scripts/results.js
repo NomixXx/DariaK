@@ -117,22 +117,24 @@ async function displayResults() {
     }
 }
 
+
 // Функция для отправки результатов
-function submitQuiz() {
+async function submitQuiz() {
     const facultySelect = document.getElementById('facultySelect');
     const selectedFacultyEncoded = facultySelect.value;
     if (!selectedFacultyEncoded) {
-        alert("Выберите факультет перед отправкой ответов.");
+        alert("Выберите факультет перед отправкой ответов."); // Проверка выбора факультета
         return;
     }
 
     const quizForm = document.getElementById('quizForm');
     const totalScore = Array.from(quizForm.querySelectorAll('input[type="radio"]:checked'))
-        .reduce((sum, input) => sum + parseInt(input.value), 0);
+        .reduce((sum, input) => sum + parseInt(input.value), 0); // Считаем сумму баллов
 
+    // Проверяем, ответили ли на все вопросы
     const unansweredQuestions = Array.from(quizForm.querySelectorAll('.question-block')).filter(block => {
         const radioButtons = block.querySelectorAll('input[type="radio"]');
-        return !Array.from(radioButtons).some(button => button.checked);
+        return !Array.from(radioButtons).some(button => button.checked); // Проверяем, есть ли непройденные вопросы
     });
 
     if (unansweredQuestions.length > 0) {
@@ -141,20 +143,22 @@ function submitQuiz() {
     }
 
     if (totalScore === 0) {
-        alert("Произошла ошибка при подсчете баллов.");
+        alert("Произошла ошибка при подсчете баллов."); // Защита от ошибок
         return;
     }
 
-    const date = new Date().toLocaleString();
+    const date = new Date().toLocaleString(); // Текущая дата и время
     const decodedFaculty = decodeURIComponent(selectedFacultyEncoded);
+
+    // Создаем новые результаты для сохранения
     const newResult = { totalScore, date };
+    const updatedResults = { [decodedFaculty]: [newResult] };
 
     // Сохраняем результаты на GitHub
-    const updatedResults = { [decodedFaculty]: [newResult] };
-    saveResultsToGitHub(updatedResults);
+    await saveResultsToGitHub(updatedResults);
 
-    alert("Спасибо за ваши ответы!");
-    window.location.href = "index.html";
+    alert("Спасибо за ваши ответы!"); // Сообщение после отправки
+    window.location.href = "index.html"; // Возвращаемся на главную страницу
 }
 
 // Функция для редактирования общей суммы баллов через код
