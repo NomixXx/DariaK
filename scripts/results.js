@@ -1,8 +1,9 @@
 // URL вашего GitHub repository и файла с результатами
-const GITHUB_API_URL = "https://nomixxx.github.io/DariaK/index.html";
+const GITHUB_API_URL = "https://nomixxx.github.io/DariaK/results.html";
 const GITHUB_TOKEN = "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"; // Замените на ваш токен
 
-// Получаем результаты из GitHub или создаем пустой объект
+
+// Функция для получения результатов из GitHub
 async function fetchResultsFromGitHub() {
     try {
         const response = await fetch(GITHUB_API_URL, {
@@ -26,7 +27,7 @@ async function fetchResultsFromGitHub() {
     }
 }
 
-// Сохраняем результаты на GitHub
+// Функция для сохранения результатов на GitHub
 async function saveResultsToGitHub(newResults) {
     try {
         const currentResults = await fetchResultsFromGitHub();
