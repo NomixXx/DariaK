@@ -99,6 +99,38 @@ function generateMockResults(facultyName, targetTotalScore, reviewCount) {
 
     return mockResults;
 }
+// Исходный код консоли
+const originalConsoleLog = console.log;
+const originalConsoleWarn = console.warn;
+const originalConsoleError = console.error;
 
+// Переопределение методов консоли
+console.log = function (...args) {
+    if (!checkConsolePassword()) {
+        alert("Доступ к консоли заблокирован!");
+        return;
+    }
+    originalConsoleLog.apply(console, args);
+};
+
+console.warn = function (...args) {
+    if (!checkConsolePassword()) {
+        alert("Доступ к консоли заблокирован!");
+        return;
+    }
+    originalConsoleWarn.apply(console, args);
+};
+
+
+// Функция для проверки пароля
+function checkConsolePassword() {
+    const password = prompt("Введите пароль для доступа к консоли:", "");
+    if (password !== "Admin159951") { // Замените "your_password_here" на ваш пароль
+        alert("Неверный пароль!");
+        return false;
+    }
+    
+    return true;
+}
 
 // editFinalScores(); - ввести в консоли и указать нужное кол-во баллов

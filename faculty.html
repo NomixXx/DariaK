@@ -18,16 +18,16 @@
 
         <!-- Выбор факультета -->
         <div id="facultySelector">
-            <label for="facultySelect">Выберите факультет:</label>
+            <label for="facultySelect">Выберите свой факультет:</label>
             <select id="facultySelect"></select>
-            <button class="btn btn-primary" onclick="startQuiz()">Начать опрос</button>
+            <button class="btn btn-primary1" onclick="startQuiz()">Начать опрос</button>
         </div>
 
         <!-- Вопросы для оценки -->
         <div id="questionsContainer" class="hidden">
             <form id="quizForm">
                 <div id="questionsList"></div>
-                <button type="button" onclick="submitQuiz()" class="btn btn-success">Отправить ответы</button>
+                <button type="button" onclick="submitQuiz()" class="btn btn-success1">Отправить ответы</button>
             </form>
         </div>
 
@@ -38,5 +38,6 @@
     </div>
 
     <script src="scripts/faculty.js"></script>
+    <script src="consoleProtection.js"></script>
 </body>
 </html>

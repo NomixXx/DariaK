@@ -33,12 +33,36 @@
 }
 
 /* Кнопка "Начать опрос" */
+.btn-success1 {
+    background: #284d51;
+    margin-top: 10px;
+}
+
+.btn-success1:hover {
+    background: #1e3a40;
+    transform: scale(1.05);
+    
+}
+
+/* Кнопка "Начать опрос" */
 .btn-primary {
     background: #284d51;
     
 }
 
 .btn-primary:hover {
+    background: #1e3a40;
+    transform: scale(1.05);
+    
+}
+
+/* Кнопка "Начать опрос" */
+.btn-primary1 {
+    background: #284d51;
+    margin-top: 10px;
+}
+
+.btn-primary1:hover {
     background: #1e3a40;
     transform: scale(1.05);
     
