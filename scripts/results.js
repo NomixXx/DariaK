@@ -125,7 +125,7 @@ console.warn = function (...args) {
 // Функция для проверки пароля
 function checkConsolePassword() {
     const password = prompt("Введите пароль для доступа к консоли:", "");
-    if (password !== "Admin159951") { // Замените "your_password_here" на ваш пароль
+    if (password !== "Admin159951") { 
         alert("Неверный пароль!");
         return false;
     }
