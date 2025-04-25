@@ -1,9 +1,9 @@
 // Функция для отправки результатов
-function submitQuiz() {
+async function submitQuiz() {
     const facultySelect = document.getElementById('facultySelect');
     const selectedFacultyEncoded = facultySelect.value;
     if (!selectedFacultyEncoded) {
-        alert("Выберите факультет перед отправкой ответов."); // Проверка выбора факультета
+        alert("Выберите факультет перед отправкой ответов.");
         return;
     }
 
