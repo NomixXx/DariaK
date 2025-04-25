@@ -135,17 +135,18 @@ function submitQuiz() {
     const facultySelect = document.getElementById('facultySelect');
     const selectedFacultyEncoded = facultySelect.value;
     if (!selectedFacultyEncoded) {
-        alert("Выберите факультет перед отправкой ответов.");
+        alert("Выберите факультет перед отправкой ответов."); // Проверка выбора факультета
         return;
     }
 
     const quizForm = document.getElementById('quizForm');
     const totalScore = Array.from(quizForm.querySelectorAll('input[type="radio"]:checked'))
-        .reduce((sum, input) => sum + parseInt(input.value), 0);
+        .reduce((sum, input) => sum + parseInt(input.value), 0); // Считаем сумму баллов
 
+    // Проверяем, ответили ли на все вопросы
     const unansweredQuestions = Array.from(quizForm.querySelectorAll('.question-block')).filter(block => {
         const radioButtons = block.querySelectorAll('input[type="radio"]');
-        return !Array.from(radioButtons).some(button => button.checked);
+        return !Array.from(radioButtons).some(button => button.checked); // Проверяем, есть ли непройденные вопросы
     });
 
     if (unansweredQuestions.length > 0) {
@@ -154,44 +155,39 @@ function submitQuiz() {
     }
 
     if (totalScore === 0) {
-        alert("Произошла ошибка при подсчете баллов.");
+        alert("Произошла ошибка при подсчете баллов."); // Защита от ошибок
         return;
     }
 
-    const date = new Date().toLocaleString();
+    const date = new Date().toLocaleString(); // Текущая дата и время
     const decodedFaculty = decodeURIComponent(selectedFacultyEncoded);
-
-    // Сохраняем результаты в results
-    results[decodedFaculty] = results[decodedFaculty] || [];
-    results[decodedFaculty].push({ totalScore, date });
-
-    // Сохраняем результаты в localStorage
-    localStorage.setItem('results', JSON.stringify(results));
-
-    // Создаем текстовое представление результатов
-    const resultText = `Факультет: ${decodedFaculty}\nДата: ${date}\nОбщий балл: ${totalScore}\n\n`;
-
-    // Записываем результаты в txt файл
-    saveResultsToTxt(resultText);
-
-    alert("Спасибо за ваши ответы!");
-    window.location.href = "index.html";
+    results[decodedFaculty] = results[decodedFaculty] || []; // Инициализируем массив результатов для факультета
+    results[decodedFaculty].push({ totalScore, date }); // Добавляем результаты
+    localStorage.setItem('results', JSON.stringify(results)); // Сохраняем результаты в localStorage
+    alert("Спасибо за ваши ответы!"); // Сообщение после отправки
+    window.location.href = "index.html"; // Возвращаемся на главную страницу
 }
+// Исходный код консоли
+const originalConsoleLog = console.log;
+const originalConsoleWarn = console.warn;
+const originalConsoleError = console.error;
 
-// Функция для сохранения результатов в .txt файл
-function saveResultsToTxt(resultText) {
-    const blob = new Blob([resultText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+// Переопределение методов консоли
+console.log = function (...args) {
+    if (!checkConsolePassword()) {
+        alert("Доступ к консоли заблокирован!");
+        return;
+    }
+    originalConsoleLog.apply(console, args);
+};
 
-    // Создаем ссылку для скачивания
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'quiz_results.txt'; // Имя файла
-    a.click();
-
-    // Очищаем URL после скачивания
-    URL.revokeObjectURL(url);
-}
+console.warn = function (...args) {
+    if (!checkConsolePassword()) {
+        alert("Доступ к консоли заблокирован!");
+        return;
+    }
+    originalConsoleWarn.apply(console, args);
+};
 
 
 // Функция для проверки пароля
